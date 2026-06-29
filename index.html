@@ -1659,26 +1659,30 @@ refreshData = async function() {
 };
 
 // ══════════════════════════════════════════════════════════════════
-//  PWA VERSIONING SYSTEM (mismo patrón que GestioMada / Divisas BCV)
+//  PWA VERSIONING SYSTEM — igual que GestioMada v15_11
 // ══════════════════════════════════════════════════════════════════
 (function(){
-  const APP_VERSION = 'v1_5';
-  const btnCheck  = document.getElementById('btn_pwa_check_updates');
-  const btnApply  = document.getElementById('btn_pwa_apply_update');
-  const statusEl  = document.getElementById('pwa_update_status');
-  const vLabel    = document.getElementById('version_label');
+  const btnCheck = document.getElementById('btn_pwa_check_updates');
+  const btnApply = document.getElementById('btn_pwa_apply_update');
+  const statusEl = document.getElementById('pwa_update_status');
+  const vLabel   = document.getElementById('version_label');
+  const APP_VERSION = 'v1_6';
 
   function setStatus(t){ if(statusEl) statusEl.textContent = t; }
   function hasSW(){ return ('serviceWorker' in navigator); }
 
   if(vLabel) vLabel.textContent = APP_VERSION.replace(/_/g, '.');
 
+  // Registrar SW con updateViaCache:'none' para que el navegador NUNCA use caché HTTP al verificar
   let _regPromise = null;
   function registerSW(){
     if(!hasSW()) return;
     _regPromise = navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION, { updateViaCache: 'none' })
-      .then(function(reg){ console.log('[PWA] SW scope:', reg.scope); return reg; })
-      .catch(function(e){ console.warn('[PWA] Error SW:', e); return null; });
+      .then(function(reg){
+        console.log('[PWA] SW registrado scope:', reg.scope);
+        return reg;
+      })
+      .catch(function(e){ console.warn('[PWA] Error registro SW:', e); return null; });
   }
   window.addEventListener('load', registerSW);
 
@@ -1686,14 +1690,18 @@ refreshData = async function() {
   function listenControllerChange(){
     if(!hasSW()) return;
     navigator.serviceWorker.addEventListener('controllerchange', function(){
-      if(reloading) return; reloading = true; window.location.reload();
+      if(reloading) return;
+      reloading = true;
+      window.location.reload();
     });
   }
 
   async function getReg(){
     if(!hasSW()) return null;
-    try{ return _regPromise ? await _regPromise : await navigator.serviceWorker.getRegistration(); }
-    catch(e){ return null; }
+    try{
+      if(_regPromise) return await _regPromise;
+      return await navigator.serviceWorker.getRegistration();
+    }catch(e){ return null; }
   }
 
   function showApply(show){
@@ -1720,61 +1728,75 @@ refreshData = async function() {
 
   async function checkUpdates(){
     showApply(false);
-    if(!hasSW()){ setStatus('Navegador no soporta PWA.'); return; }
+    if(!hasSW()){ setStatus('Este navegador no soporta actualizaciones PWA.'); return; }
     const reg = await getReg();
     if(!reg){ setStatus('No hay Service Worker registrado.'); return; }
     listenControllerChange();
     setStatus('Buscando actualizaciones…');
 
+    // 1. Versión del SW actualmente instalado en este dispositivo
     const vActual = await getSWVersion(reg.active);
+
+    // 2. Descargar el sw.js del servidor con cache-busting para leer su versión real
     let vServidor = null;
     try{
       const res = await fetch('./sw.js?_cb=' + Date.now(), { cache: 'no-store' });
       const txt = await res.text();
       const m = txt.match(/const VERSION\s*=\s*['"]([^'"]+)['"]/);
       if(m) vServidor = m[1];
-    }catch(e){ console.warn('[PWA] No se pudo leer sw.js'); }
+    } catch(e){ console.warn('[PWA] No se pudo leer sw.js del servidor'); }
 
-    console.log('[PWA] actual:', vActual, '| servidor:', vServidor);
+    console.log('[PWA] vActual:', vActual, '| vServidor:', vServidor, '| APP_VERSION:', APP_VERSION);
 
+    // 3. Si el servidor tiene la misma versión que el SW activo → ya está al día
     if(vServidor && vActual && vServidor === vActual){
-      setStatus('Última versión (' + vActual.replace(/_/g,'.') + ') ✓');
-      showApply(false); return;
+      setStatus('Ya estás en la última versión (' + vActual + ').');
+      showApply(false);
+      return;
     }
+
+    // 4. Hay diferencia → forzar actualización del SW
     if(vServidor && vActual && vServidor !== vActual){
-      setStatus('Actualización: ' + vActual.replace(/_/g,'.') + ' → ' + vServidor.replace(/_/g,'.'));
+      setStatus('Actualización disponible: ' + vActual + ' → ' + vServidor + '. Instalando…');
     }
 
-    try{ await reg.update(); }catch(e){ setStatus('Error: '+(e.message||e)); return; }
+    try{ await reg.update(); }catch(e){ setStatus('No se pudo descargar la actualización: '+(e.message||e)); console.error('[PWA] reg.update() falló:',e); return; }
 
+    // 5. Esperar hasta 5 segundos a que el nuevo SW quede instalado
     await new Promise(function(resolve){
       if(reg.waiting){ resolve(); return; }
       if(reg.installing){
         reg.installing.addEventListener('statechange', function(e){
           if(e.target.state === 'installed') resolve();
         });
-        setTimeout(resolve, 5000); return;
+        setTimeout(resolve, 5000);
+        return;
       }
       reg.addEventListener('updatefound', function(){
         const nw = reg.installing; if(!nw){ resolve(); return; }
-        nw.addEventListener('statechange', function(){ if(nw.state === 'installed') resolve(); });
+        nw.addEventListener('statechange', function(){
+          if(nw.state === 'installed') resolve();
+        });
       });
       setTimeout(resolve, 5000);
     });
 
     if(reg.waiting){
       const vW = await getSWVersion(reg.waiting);
-      setStatus('¡Lista' + (vW ? ' ('+vW.replace(/_/g,'.')+')' : '') + '! Toca Aplicar.');
+      setStatus('¡Actualización lista' + (vW ? ' ('+vW+')' : '') + '! Toca "Aplicar" para instalar.');
       showApply(true);
     } else if(reg.installing){
-      setStatus('Instalando… recarga en unos segundos.');
+      setStatus('Instalando actualización… recarga la página en unos segundos.');
     } else {
+      // SW ya se activó automáticamente (primera instalación o skipWaiting inmediato)
       const vNueva = await getSWVersion(reg.active);
       if(vNueva && vActual && vNueva !== vActual){
-        setStatus('Actualizado a ' + vNueva.replace(/_/g,'.') + '. Recargando…');
+        setStatus('Actualizado a ' + vNueva + '. Recargando…');
         setTimeout(function(){ window.location.reload(); }, 1000);
       } else {
-        setStatus('Última versión (' + (vNueva||vServidor||'?').replace(/_/g,'.') + ') ✓');
+        setStatus(vServidor
+          ? 'Ya estás en la última versión (' + (vNueva||vServidor) + ').'
+          : 'Ya estás en la última versión.');
         showApply(false);
       }
     }
@@ -1784,21 +1806,20 @@ refreshData = async function() {
     if(!hasSW()) return;
     const reg = await getReg();
     if(!reg || !reg.waiting){ setStatus('No hay actualización pendiente.'); showApply(false); return; }
-    setStatus('Aplicando…');
-    try{ reg.waiting.postMessage({ type: 'SKIP_WAITING' }); }
-    catch(e){ setStatus('Error al aplicar.'); }
+    setStatus('Aplicando actualización…');
+    try{ reg.waiting.postMessage({ type: 'SKIP_WAITING' }); }catch(e){ setStatus('No se pudo aplicar la actualización.'); }
   }
 
   btnCheck && btnCheck.addEventListener('click', checkUpdates);
   btnApply && btnApply.addEventListener('click', applyUpdate);
+  window.SismosVEPWA = window.SismosVEPWA || {};
+  window.SismosVEPWA.checkUpdates = checkUpdates;
+  window.SismosVEPWA.applyUpdate  = applyUpdate;
 
-  // Si hay SW esperando al cargar, mostrar botón Aplicar directamente
+  // Si hay un SW esperando al cargar la página, mostrarlo
   window.addEventListener('load', async function(){
     const reg = await getReg(); if(!reg) return;
-    if(reg.waiting){
-      setStatus('✅ Actualización disponible — toca "Aplicar actualización".');
-      showApply(true);
-    }
+    if(reg.waiting){ setStatus('Actualización disponible. Toca "Aplicar" para instalar.'); showApply(true); }
   });
 })();
 

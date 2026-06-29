@@ -448,6 +448,115 @@ body.dark header {
 .fab-refresh svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .fab-refresh.spinning svg { animation: spn .8s linear infinite; }
 body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,140,248,.3); }
+
+/* ── Alerta sismo reciente ── */
+.recent-alert {
+  display:none; margin: 12px 0 0;
+  background: linear-gradient(135deg, rgba(239,68,68,.12), rgba(249,115,22,.08));
+  border: 1px solid rgba(239,68,68,.25); border-radius: 16px; padding: 12px 14px;
+  animation: sup .3s ease;
+}
+.recent-alert.show { display:flex; gap:12px; align-items:center; }
+.ra-badge { flex-shrink:0; width:44px; height:44px; border-radius:12px; background:rgba(239,68,68,.15); color:var(--red); display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:700; }
+.ra-mag { font-size:16px; line-height:1; }
+.ra-lbl { font-size:8px; text-transform:uppercase; letter-spacing:.3px; opacity:.7; }
+.ra-text { flex:1; min-width:0; }
+.ra-title { font-size:13px; font-weight:700; color:var(--text); }
+.ra-sub   { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.ra-pulse { width:10px; height:10px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); animation:pulse 1.2s infinite; flex-shrink:0; }
+
+/* ── Barra herramientas lista ── */
+.list-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:2px; }
+.list-toolbar .list-title { margin:0; flex:1; }
+.sort-btn {
+  display:flex; align-items:center; gap:4px; padding:4px 10px; border-radius:10px;
+  font-size:11px; font-weight:600; background:var(--surface); border:1px solid var(--border-strong);
+  color:var(--text-secondary); cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0;
+}
+.sort-btn svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Buscador ── */
+.search-wrap { position:relative; margin-bottom:6px; }
+.search-wrap svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; stroke:var(--text-tertiary); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+.search-input {
+  width:100%; height:38px; padding:0 36px; border-radius:12px;
+  border:1.5px solid var(--border-strong); background:var(--surface);
+  color:var(--text); font-size:13px; font-family:inherit; font-weight:500;
+}
+.search-input::placeholder { color:var(--text-tertiary); }
+.search-input:focus { outline:none; border-color:var(--accent); }
+
+/* ── Distancia badge en cards ── */
+.dist-badge { font-size:10px; font-weight:700; color:var(--accent); background:var(--accent-light); padding:1px 6px; border-radius:100px; flex-shrink:0; }
+
+/* ── Widget último sismo ── */
+.last-quake-widget {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:12px 14px; display:flex; align-items:center; gap:12px;
+  box-shadow:var(--card-shadow); margin-bottom:12px; cursor:pointer;
+}
+.lq-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text-tertiary); margin-bottom:3px; }
+.lq-loc   { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lq-sub   { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.lq-ago   { font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-light); padding:2px 8px; border-radius:100px; flex-shrink:0; white-space:nowrap; }
+
+/* ── Actividad por fallas ── */
+.falla-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.falla-row:last-child { border:none; }
+.falla-name { font-size:13px; font-weight:600; color:var(--text); width:130px; flex-shrink:0; }
+.falla-bar-wrap { flex:1; height:6px; background:var(--surface-alt); border-radius:3px; overflow:hidden; }
+.falla-bar { height:100%; border-radius:3px; transition:width .6s ease; }
+.falla-count { font-size:11px; font-weight:700; color:var(--text-secondary); width:36px; text-align:right; flex-shrink:0; }
+
+/* ── Gráfico actividad diaria ── */
+.chart-wrap { margin-top:6px; overflow-x:auto; scrollbar-width:none; }
+.chart-wrap::-webkit-scrollbar { display:none; }
+.chart-bars { display:flex; align-items:flex-end; gap:3px; height:60px; min-width:100%; }
+.chart-bar-col { display:flex; flex-direction:column; align-items:center; gap:3px; flex:1; min-width:20px; }
+.chart-bar { width:100%; border-radius:4px 4px 0 0; background:var(--accent-light); min-height:2px; transition:height .4s ease; position:relative; cursor:pointer; }
+.chart-bar:hover { background:var(--accent); }
+.chart-bar-lbl { font-size:9px; color:var(--text-tertiary); text-align:center; white-space:nowrap; }
+
+/* ── Mapa de calor toggle ── */
+.map-controls { display:flex; gap:6px; padding:8px 10px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; }
+.map-ctrl-btn { display:flex; align-items:center; gap:5px; padding:5px 11px; border-radius:10px; font-size:12px; font-weight:600; border:1px solid var(--border-strong); background:transparent; color:var(--text-secondary); cursor:pointer; font-family:inherit; transition:all .15s; }
+.map-ctrl-btn.active { background:var(--accent-light); border-color:rgba(79,70,229,.2); color:var(--accent); }
+.map-ctrl-btn svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Botón compartir en detalle ── */
+.share-row { display:flex; gap:8px; margin-top:10px; }
+.share-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-radius:12px; font-size:13px; font-weight:600; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
+.share-btn:active { transform:scale(.97); }
+.share-btn.whatsapp { background:rgba(37,211,102,.12); color:#25d366; }
+.share-btn.copy     { background:var(--accent-light); color:var(--accent); }
+.share-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Export CSV ── */
+.export-btn { display:flex; align-items:center; gap:7px; padding:10px 14px; border-radius:12px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border-strong); color:var(--text-secondary); cursor:pointer; font-family:inherit; transition:all .15s; }
+.export-btn:active { transform:scale(.97); }
+.export-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ── Histórico FUNVISIS ── */
+.funvisis-card { background: var(--green-bg); border: 1px solid rgba(16,185,129,.2); border-radius: 16px; padding: 14px 16px; margin-bottom: 0; }
+.funvisis-card h4 { font-size: 13px; font-weight: 700; color: var(--green); display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.funvisis-card h4 svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.funvisis-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+.funvisis-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.funvisis-input { height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font-size: 12px; font-family: inherit; }
+.funvisis-input:focus { outline: none; border-color: var(--green); }
+.funvisis-btn { height: 34px; padding: 0 14px; border-radius: 10px; border: none; background: var(--green); color: #fff; font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; flex-shrink: 0; }
+.funvisis-btn:disabled { opacity: .5; cursor: not-allowed; }
+.funvisis-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.funvisis-status { font-size: 11px; color: var(--text-secondary); margin-top: 8px; min-height: 16px; }
+.funvisis-status.ok  { color: var(--green); }
+.funvisis-status.err { color: var(--red); }
+
+/* ── Notificaciones push ── */
+.notif-btn { display:flex; align-items:center; gap:7px; padding:10px 14px; border-radius:12px; font-size:13px; font-weight:600; border:1px solid var(--border-strong); cursor:pointer; font-family:inherit; transition:all .15s; }
+.notif-btn.off { background:var(--surface); color:var(--text-secondary); }
+.notif-btn.on  { background:var(--accent-light); border-color:rgba(79,70,229,.2); color:var(--accent); }
+.notif-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
 </style>
 </head>
 <body>
@@ -498,6 +607,26 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
 <!-- ═══ LISTA ═══ -->
 <div id="tab-lista">
   <div class="scroll-wrap">
+    <!-- Alerta sismo reciente -->
+    <div class="recent-alert" id="recentAlert">
+      <div class="ra-badge" id="raBadge"><span class="ra-mag" id="raMag">—</span><span class="ra-lbl" id="raLbl">—</span></div>
+      <div class="ra-text">
+        <div class="ra-title" id="raTitle">Sismo reciente</div>
+        <div class="ra-sub"   id="raSub">—</div>
+      </div>
+      <div class="ra-pulse"></div>
+    </div>
+
+    <!-- Widget último sismo -->
+    <div class="last-quake-widget" id="lastQuakeWidget" onclick="openDetail(0)" style="display:none">
+      <div style="min-width:0;flex:1">
+        <div class="lq-label">Último sismo</div>
+        <div class="lq-loc" id="lqLoc">—</div>
+        <div class="lq-sub" id="lqSub">—</div>
+      </div>
+      <div class="lq-ago" id="lqAgo">—</div>
+    </div>
+
     <div class="stats">
       <div class="stat-box sb-blue">
         <div class="stat-label">Total</div>
@@ -543,7 +672,24 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
       <input type="date" id="dTo" onchange="applyCustom()">
     </div>
 
-    <p class="list-title" id="listTitle">Últimos 7 días</p>
+    <!-- Buscador -->
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="searchInput" type="search" placeholder="Buscar por estado, ciudad…" oninput="renderList()">
+    </div>
+
+    <!-- Título + ordenar + exportar -->
+    <div class="list-toolbar">
+      <p class="list-title" id="listTitle">Últimos 7 días</p>
+      <button class="sort-btn" id="sortBtn" onclick="cycleSort()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/></svg>
+        <span id="sortLabel">Reciente</span>
+      </button>
+      <button class="export-btn" onclick="exportCSV()" title="Exportar CSV">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV
+      </button>
+    </div>
     <div class="sismo-list" id="sismoList">
       <div class="loading"><div class="spin"></div><span>Cargando datos...</span></div>
     </div>
@@ -552,6 +698,20 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
 
 <!-- ═══ MAPA ═══ -->
 <div id="tab-mapa">
+  <div class="map-controls">
+    <button class="map-ctrl-btn active" id="mapModeMarkers" onclick="setMapMode('markers')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76a1 1 0 0 0 1.3 0C12.95 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>
+      Marcadores
+    </button>
+    <button class="map-ctrl-btn" id="mapModeHeat" onclick="setMapMode('heat')">
+      <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      Calor
+    </button>
+    <button class="map-ctrl-btn" id="mapGeoBtn" onclick="centerMapOnUser()">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Mi ubicación
+    </button>
+  </div>
   <div id="mapEl"></div>
   <div class="mbar" id="mbar">
     <div class="mbar-inner">
@@ -593,9 +753,51 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
       <h3><div class="card-icon amber"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>¿Qué hacer en un sismo?</h3>
       <p>Aléjate de ventanas y objetos que puedan caer. Agáchate bajo una mesa resistente. No uses ascensores. Permanece en calma hasta que cese el movimiento. Ten un plan de evacuación familiar.</p>
     </div>
+    <!-- Gráfico actividad -->
+    <div class="icard" id="activityCard">
+      <h3><div class="card-icon purple"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Actividad diaria</h3>
+      <div class="chart-wrap"><div class="chart-bars" id="chartBars"></div></div>
+    </div>
+
+    <!-- Fallas activas -->
     <div class="icard">
-      <h3><div class="card-icon red"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Fuente de datos</h3>
+      <h3><div class="card-icon red"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Actividad por fallas</h3>
+      <p style="margin-bottom:10px">Sismos del período seleccionado cerca de cada falla principal.</p>
+      <div id="fallasWrap"></div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div class="icard">
+      <h3><div class="card-icon amber"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>Alertas de sismos</h3>
+      <p style="margin-bottom:10px">Recibe una notificación cuando ocurra un sismo ≥4.0 Mw en Venezuela.</p>
+      <button class="notif-btn off" id="notifBtn" onclick="toggleNotifications()">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="notifBtnText">Activar alertas</span>
+      </button>
+    </div>
+
+    <div class="icard">
+      <h3><div class="card-icon red"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Fuentes de datos</h3>
       <p>Combina <strong>USGS</strong> (red global, sismos ≥2.5 Mw con historial por fechas) y <strong>FUNVISIS</strong> vía SismosVE (réplicas pequeñas del día actual). Cada sismo indica su fuente en el detalle.</p>
+
+      <!-- Carga histórica FUNVISIS -->
+      <div class="funvisis-card" style="margin-top:12px">
+        <h4>
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Cargar histórico FUNVISIS
+        </h4>
+        <p>Extrae sismos directamente del dataset oficial de FUNVISIS (Power BI) para el rango de fechas seleccionado y los agrega al cache local. Útil para recuperar sismos perdidos del día o cargar datos históricos.</p>
+        <div class="funvisis-row">
+          <input type="date" id="fvFromDate" class="funvisis-input">
+          <span style="font-size:11px;color:var(--text-tertiary)">hasta</span>
+          <input type="date" id="fvToDate" class="funvisis-input">
+          <button class="funvisis-btn" id="fvBtn" onclick="cargarHistoricoFunvisis()">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Cargar
+          </button>
+        </div>
+        <div class="funvisis-status" id="fvStatus"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -618,6 +820,16 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
       <div class="drow"><span class="dkey"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 7.05 11.5 7.35 11.76a1 1 0 0 0 1.3 0C12.95 21.5 20 15.4 20 10a8 8 0 0 0-8-8z"/></svg>Coordenadas</span><span class="dval" id="dCoords">—</span></div>
       <div class="drow"><span class="dkey"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Fuente</span><span class="dval" id="dSrc">—</span></div>
       <button class="mapbtn" onclick="verEnMapa()">Ver en mapa</button>
+      <div class="share-row">
+        <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          WhatsApp
+        </button>
+        <button class="share-btn copy" onclick="copyDetail()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -659,7 +871,93 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
 var USGS    = 'https://earthquake.usgs.gov/fdsnws/event/1/query';
 var VE_BOX  = 'minlatitude=0.6&maxlatitude=13.0&minlongitude=-73.4&maxlongitude=-59.8';
 var SISMOSVE = 'https://sismosve.rafnixg.dev/api/sismos';
+// API propia opcional. Si publicas api-server.js en Render/Railway/VPS, coloca aquí la URL.
+// También puedes definirla desde consola: localStorage.setItem('sismos_api_base','https://tu-api.com')
+var FUNVISIS_API_BASE = (localStorage.getItem('sismos_api_base') || '').replace(/\/$/, '');
 var REFRESH_MS = 5 * 60 * 1000;
+
+// ════════════════════════════════════════════════════════
+//  ACUMULADOR FUNVISIS EN localStorage
+//  Cada vez que se reciben datos de FUNVISIS (SismosVE o
+//  API propia), se SUMAN al cache del dia actual sin borrar
+//  los sismos anteriores. Asi aunque FUNVISIS solo sirva
+//  los ultimos 20 en cada llamada, la app construye el
+//  historial completo del dia en el dispositivo.
+//  El cache se limpia automaticamente al pasar de dia.
+// ════════════════════════════════════════════════════════
+var FUNVISIS_CACHE_KEY = 'sismos_funvisis_cache';
+
+function _veToday() {
+  // Fecha de hoy en Venezuela (UTC-4) como string YYYY-MM-DD
+  var ve = new Date(Date.now() - 4 * 60 * 60 * 1000);
+  return ve.toISOString().split('T')[0];
+}
+
+function funvisisCacheLoad() {
+  // Devuelve el array acumulado del dia actual, o [] si es un dia nuevo
+  try {
+    var raw = localStorage.getItem(FUNVISIS_CACHE_KEY);
+    if (!raw) return [];
+    var obj = JSON.parse(raw);
+    if (obj.date !== _veToday()) {
+      // Nuevo dia: limpiar cache anterior
+      localStorage.removeItem(FUNVISIS_CACHE_KEY);
+      return [];
+    }
+    return obj.sismos || [];
+  } catch(e) { return []; }
+}
+
+function funvisisCacheSave(newSismos) {
+  // Combina los sismos nuevos con los ya acumulados, deduplica y guarda
+  if (!newSismos || !newSismos.length) return;
+  try {
+    var existing = funvisisCacheLoad();
+    // Combinar y deduplicar usando la misma logica que dedupe()
+    var combined = existing.concat(newSismos);
+    var seen = new Set();
+    var deduped = combined.filter(function(s) {
+      var keyTs = s.ts ? Math.round(s.ts / 60000) : s.time;
+      var key = (s.lat||0).toFixed(2)+'|'+(s.lon||0).toFixed(2)+'|'+(s.mag||0).toFixed(1)+'|'+keyTs;
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    // Limitar a 300 sismos para no saturar localStorage (cada sismo ~200 bytes → 60KB max)
+    if (deduped.length > 300) deduped = deduped.slice(0, 300);
+    localStorage.setItem(FUNVISIS_CACHE_KEY, JSON.stringify({
+      date: _veToday(),
+      sismos: deduped
+    }));
+  } catch(e) { /* localStorage lleno o bloqueado — continuar sin cache */ }
+}
+
+// Polyfill Promise.any para navegadores sin soporte (Android < 89, Safari < 14)
+if (typeof Promise.any !== 'function') {
+  Promise.any = function(promises) {
+    return new Promise(function(resolve, reject) {
+      var errors = [], settled = 0, total = promises.length;
+      if (!total) { reject(new AggregateError([], 'All promises were rejected')); return; }
+      promises.forEach(function(p, i) {
+        Promise.resolve(p).then(resolve).catch(function(e) {
+          errors[i] = e;
+          if (++settled === total) reject(new AggregateError(errors, 'All promises were rejected'));
+        });
+      });
+    });
+  };
+}
+
+// Tiempo máximo de espera para consultas externas.
+// Evita que los filtros por período se sientan lentos cuando una fuente tarda.
+var FETCH_TIMEOUT_MS = 10000; // 10s para tolerar cold starts de Railway
+function fetchJsonFast(url) {
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = null;
+  if (ctrl) timer = setTimeout(function(){ try { ctrl.abort(); } catch(e){} }, FETCH_TIMEOUT_MS);
+  return fetch(url, { cache:'no-store', signal: ctrl ? ctrl.signal : undefined })
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .finally(function(){ if(timer) clearTimeout(timer); });
+}
 
 // ── Persistencia ──────────────────────────────────────────────────────────
 var PREF_KEY = 'sismos_prefs';
@@ -705,6 +1003,17 @@ var mapSelIdx      = null;
 var toastTimer     = null;
 var srcUSGS        = true;
 var srcFUNVISIS    = true;
+var pendingRefresh = false;
+var refreshSeq     = 0;
+
+function dataRequestKey() {
+  return [dateFilter, magFilter, srcUSGS ? 1 : 0, srcFUNVISIS ? 1 : 0, customFrom ? customFrom.getTime() : '', customTo ? customTo.getTime() : ''].join('|');
+}
+
+function requestRefresh() {
+  if (isLoading) { pendingRefresh = true; return; }
+  refreshData();
+}
 
 // ── Magnitud ───────────────────────────────────────────────────────────────
 function mClass(v){ return v<2?'m0':v<3?'m1':v<4?'m2':v<5?'m3':'m4'; }
@@ -721,26 +1030,36 @@ function toVEDate(d) {
 
 function dateRange() {
   var now = new Date();
-  // Calculamos inicio/fin en UTC pero considerando que VE = UTC-4
-  var end = new Date(now);
-  end.setUTCHours(23,59,59,999);
-  var start = new Date(now);
-  start.setUTCHours(0,0,0,0);
+  // Toda la logica se hace en hora venezolana (UTC-4) para evitar
+  // desfases cuando el browser corre en una zona horaria diferente.
+  var veNow = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+  var veY = veNow.getUTCFullYear(), veM = veNow.getUTCMonth(), veD = veNow.getUTCDate();
+
+  var start, end;
 
   if (dateFilter === 'hoy') {
-    // Hoy en Venezuela: desde 00:00 VE (04:00 UTC) hasta 23:59 VE (03:59 UTC del día siguiente)
-    var veNow = new Date(now.getTime() - 4 * 60 * 60 * 1000);
-    var veY = veNow.getUTCFullYear(), veM = veNow.getUTCMonth(), veD = veNow.getUTCDate();
-    start = new Date(Date.UTC(veY, veM, veD, 4, 0, 0));   // 00:00 VE = 04:00 UTC
-    end   = new Date(Date.UTC(veY, veM, veD+1, 3, 59, 59)); // 23:59 VE = 03:59 UTC día+1
+    // 00:00 VE = 04:00 UTC  /  23:59:59 VE = 03:59:59 UTC del dia siguiente
+    start = new Date(Date.UTC(veY, veM, veD,     4,  0,  0,   0));
+    end   = new Date(Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999));
+
   } else if (dateFilter === '7d') {
-    start = new Date(now); start.setDate(start.getDate()-6); start.setHours(0,0,0,0);
+    // Ultimos 7 dias: desde 00:00 VE hace 6 dias hasta 23:59:59 VE de hoy
+    start = new Date(Date.UTC(veY, veM, veD - 6,  4,  0,  0,   0));
+    end   = new Date(Date.UTC(veY, veM, veD + 1,  3, 59, 59, 999));
+
   } else if (dateFilter === '30d') {
-    start = new Date(now); start.setDate(start.getDate()-29); start.setHours(0,0,0,0);
+    start = new Date(Date.UTC(veY, veM, veD - 29, 4,  0,  0,   0));
+    end   = new Date(Date.UTC(veY, veM, veD + 1,  3, 59, 59, 999));
+
   } else if (dateFilter === 'custom') {
-    if (customFrom) { start = new Date(customFrom); start.setHours(0,0,0,0); }
-    if (customTo)   { end   = new Date(customTo);   end.setHours(23,59,59,999); }
+    start = customFrom ? new Date(new Date(customFrom).setUTCHours(0,0,0,0))     : new Date(Date.UTC(veY, veM, veD - 6, 4, 0, 0));
+    end   = customTo   ? new Date(new Date(customTo).setUTCHours(23,59,59,999))  : new Date(Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999));
+
+  } else {
+    start = new Date(Date.UTC(veY, veM, veD - 6, 4, 0, 0));
+    end   = new Date(Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999));
   }
+
   return { start: toISO(start), end: toISO(end) };
 }
 
@@ -776,6 +1095,21 @@ function fromUSGS(f) {
   };
 }
 
+// Convierte feature de API histórica propia a objeto interno
+function fromFunvisisApi(f) {
+  var p = f.properties || f;
+  var dt = new Date(p.ts || Date.now());
+  return {
+    mag:   +(parseFloat(p.mag)||0).toFixed(1),
+    loc:   p.loc || p.addressFormatted || 'Venezuela',
+    depth: +(parseFloat(p.depth)||0).toFixed(1),
+    lat:   parseFloat(p.lat), lon: parseFloat(p.lon || p.long), ts: Number(p.ts || dt.getTime()),
+    date:  p.date || dt.toLocaleDateString('es-VE',{day:'2-digit',month:'2-digit',year:'numeric'}),
+    time:  p.time || dt.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'}),
+    src:   'FUNVISIS'
+  };
+}
+
 // Convierte feature de sismosve a objeto interno
 function fromSismosve(f) {
   var p = f.properties;
@@ -784,10 +1118,15 @@ function fromSismosve(f) {
   var dateStr = parts.length === 3
     ? parts[0]+'/'+parts[1]+'/'+parts[2]
     : p.date;
-  // timestamp aproximado para dedup
-  var ts = parts.length === 3
-    ? new Date(parts[2]+'-'+parts[1]+'-'+parts[0]+'T'+p.time+':00').getTime()
-    : 0;
+  // Timestamp con zona horaria VE (UTC-4) para que coincida con dateRange()
+  var ts = 0;
+  if (parts.length === 3 && p.time) {
+    try {
+      ts = new Date(parts[2]+'-'+parts[1]+'-'+parts[0]+'T'+p.time+':00-04:00').getTime();
+    } catch(e) {}
+  }
+  // Si el parse falló o da NaN, usar momento actual como fallback defensivo
+  if (!ts || isNaN(ts)) ts = Date.now();
   return {
     mag:   +(parseFloat(p.value)||0).toFixed(1),
     loc:   p.addressFormatted || 'Venezuela',
@@ -798,101 +1137,190 @@ function fromSismosve(f) {
   };
 }
 
-// Deduplica por coordenadas redondeadas + hora
+// Deduplica por coordenadas redondeadas + hora + magnitud.
+// Si ts existe, lo usa también para mayor precisión.
 function dedupe(list) {
   var seen = new Set();
   return list.filter(function(s) {
-    var key = s.lat.toFixed(2)+'|'+s.lon.toFixed(2)+'|'+s.time+'|'+s.mag.toFixed(1);
+    // Clave primaria: coordenadas + magnitud + timestamp Unix (más exacto que string de hora)
+    var keyTs = s.ts ? Math.round(s.ts / 60000) : s.time; // agrupa al minuto
+    var key = s.lat.toFixed(2)+'|'+s.lon.toFixed(2)+'|'+s.mag.toFixed(1)+'|'+keyTs;
     if (seen.has(key)) return false;
     seen.add(key); return true;
   });
 }
 
+// ── Fetcher con cadena de proxies: intenta uno a uno hasta que alguno funcione ─
+async function fetchWithProxies(primaryUrl) {
+  var candidates = [
+    primaryUrl,
+    'https://api.allorigins.win/get?url=' + encodeURIComponent(primaryUrl),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(primaryUrl),
+    'https://corsproxy.io/?url=' + encodeURIComponent(primaryUrl)
+  ];
+  for (var i = 0; i < candidates.length; i++) {
+    try {
+      var data = await fetchJsonFast(candidates[i]);
+      // allorigins /get devuelve { contents: "..." }
+      if (i === 1 && data && data.contents) data = JSON.parse(data.contents);
+      if (data && data.features && data.features.length) return data;
+    } catch(e) { /* siguiente proxy */ }
+  }
+  return null;
+}
+
 async function fetchSismos() {
   var r = dateRange();
-  var results = [];
-  var errors  = [];
+  var errors = [];
 
-  // ── 1. USGS: historial completo con filtro de fechas ──────────────────
+  // Calcular daysParam para la API histórica
+  var daysParam = 7;
+  if (dateFilter === 'hoy') {
+    daysParam = 1;
+  } else if (dateFilter === '30d') {
+    daysParam = 30;
+  } else if (dateFilter === 'custom' && customFrom) {
+    var msFrom = customFrom.getTime();
+    var msTo   = customTo ? customTo.getTime() : Date.now();
+    daysParam  = Math.ceil((msTo - msFrom) / 86400000) + 1;
+  }
+
+  // ── Lanzar USGS y FUNVISIS en PARALELO ───────────────────────────────────
+  var promises = [];
+
+  // 1. USGS
   if (srcUSGS) {
-    try {
-      var url = USGS + '?format=geojson&' + VE_BOX
-        + '&starttime=' + r.start + '&endtime=' + r.end
-        + '&minmagnitude=1&orderby=time&limit=2000';
-      var resp = await fetch(url);
-      if (resp.ok) {
-        var data = await resp.json();
-        results = results.concat((data.features || []).map(fromUSGS));
-      }
-    } catch(e) { errors.push('USGS: ' + e.message); }
+    var usgsUrl = USGS + '?format=geojson&' + VE_BOX
+      + '&starttime=' + r.start + '&endtime=' + r.end
+      + '&minmagnitude=1&orderby=time&limit=2000';
+    promises.push(
+      fetchJsonFast(usgsUrl)
+        .then(function(d){ return { src:'usgs', data: d }; })
+        .catch(function(e){ errors.push('USGS: ' + e.message); return { src:'usgs', data: null }; })
+    );
   }
 
-  // ── 2. sismosve: sismos del día actual de FUNVISIS (réplicas pequeñas) ─
+  // 2a. FUNVISIS API histórica propia
   if (srcFUNVISIS) {
-  var svFetched = false;
-  var svProxies = [
-    function() { return fetch(SISMOSVE, {cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); },
-    function() { return fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(SISMOSVE), {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){ return JSON.parse(d.contents); }); },
-    function() { return fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(SISMOSVE), {cache:'no-store'}).then(function(r){ return r.json(); }); },
-    function() { return fetch('https://corsproxy.io/?url=' + encodeURIComponent(SISMOSVE), {cache:'no-store'}).then(function(r){ return r.json(); }); }
-  ];
-  for (var pi = 0; pi < svProxies.length && !svFetched; pi++) {
-    try {
-      var svData = await svProxies[pi]();
-      if (svData && svData.features && svData.features.length) {
-        results = results.concat(svData.features.map(fromSismosve));
-        svFetched = true;
-      }
-    } catch(e) { /* probar siguiente proxy */ }
+    var apiCandidates = [];
+    if (FUNVISIS_API_BASE) apiCandidates.push(FUNVISIS_API_BASE + '/api/sismos?days=' + daysParam);
+    apiCandidates.push('/api/sismos?days=' + daysParam);
+
+    // Intenta cada candidato en paralelo y toma el primero que responda bien
+    promises.push(
+      Promise.any(apiCandidates.map(function(url){
+        return fetchJsonFast(url).then(function(d){
+          if (!d || !d.features || !d.features.length) throw new Error('vacío');
+          return { src:'funvisis_api', data: d };
+        });
+      })).catch(function(){ return { src:'funvisis_api', data: null }; })
+    );
+
+    // 2b. SismosVE directo (complemento del día actual) — también en paralelo
+    promises.push(
+      fetchWithProxies(SISMOSVE)
+        .then(function(d){ return { src:'sismosve', data: d }; })
+        .catch(function(){ return { src:'sismosve', data: null }; })
+    );
   }
-  if (!svFetched) errors.push('FUNVISIS: no disponible');
-  } // end if srcFUNVISIS
+
+  // Esperar todas las fuentes a la vez
+  var settled = await Promise.allSettled(promises);
+  var results = [];
+
+  // Recoger sismos FUNVISIS frescos para guardarlos en el cache acumulador
+  var funvisisFresh = [];
+
+  settled.forEach(function(outcome) {
+    if (outcome.status !== 'fulfilled') return;
+    var r2 = outcome.value;
+    if (!r2 || !r2.data) return;
+    var features = r2.data.features || [];
+    if (r2.src === 'usgs') {
+      results = results.concat(features.map(fromUSGS));
+    } else if (r2.src === 'funvisis_api') {
+      var mapped = features.map(fromFunvisisApi);
+      funvisisFresh = funvisisFresh.concat(mapped);
+      results = results.concat(mapped);
+    } else if (r2.src === 'sismosve') {
+      var mapped2 = features.map(fromSismosve);
+      funvisisFresh = funvisisFresh.concat(mapped2);
+      results = results.concat(mapped2);
+    }
+  });
+
+  // Guardar sismos FUNVISIS frescos en el cache acumulador del dia
+  if (funvisisFresh.length) funvisisCacheSave(funvisisFresh);
+
+  // Combinar con el cache acumulado del dia (sismos anteriores que ya no devuelve la API)
+  // Solo para filtros que incluyen el dia actual (hoy o 7d/30d que lo cubren)
+  if (srcFUNVISIS && dateFilter !== 'custom') {
+    var cached = funvisisCacheLoad();
+    if (cached.length) results = results.concat(cached);
+  }
 
   if (!results.length) throw new Error(errors.join(' / ') || 'Sin datos');
 
   // Deduplica y ordena por timestamp desc
-  return dedupe(results).sort(function(a,b){ return b.ts - a.ts; });
+  var deduped = dedupe(results).sort(function(a,b){ return b.ts - a.ts; });
+  if (!deduped.length && results.length) deduped = results.sort(function(a,b){ return b.ts - a.ts; });
+  return deduped;
 }
 
 async function refreshData() {
-  if (isLoading) return;
+  if (isLoading) { pendingRefresh = true; return; }
   isLoading = true;
+  pendingRefresh = false;
+  var mySeq = ++refreshSeq;
+  var myKey = dataRequestKey();
   document.getElementById('ricon').style.animation = 'spn .7s linear infinite';
   try {
-    allSismos = await fetchSismos();
-    updateStats();
-    updateTitle();
-    renderList();
-    if (map) renderMapMarkers();
-    setStatus(true);
+    var data = await fetchSismos();
+    // Si el usuario cambió filtros mientras cargaba, no pisamos la lista visible
+    // con una respuesta vieja. Se ejecuta otra carga justo después.
+    if (mySeq === refreshSeq && myKey === dataRequestKey() && !pendingRefresh) {
+      allSismos = data;
+      updateStats();
+      updateTitle();
+      renderList();
+      if (map) renderMapMarkers();
+      setStatus(true);
+    }
   } catch(e) {
-    showToast('Error al cargar: ' + e.message);
-    setStatus(false);
+    if (mySeq === refreshSeq && myKey === dataRequestKey() && !pendingRefresh) {
+      showToast('Error al cargar: ' + e.message);
+      setStatus(false);
+    }
   } finally {
     isLoading = false;
     document.getElementById('ricon').style.animation = '';
+    if (pendingRefresh) {
+      pendingRefresh = false;
+      setTimeout(refreshData, 0);
+    }
   }
 }
 
 // ── Stats ──────────────────────────────────────────────────────────────────
 function updateStats() {
-  var n = allSismos.length;
+  var list = filtered();
+  var n = list.length;
   document.getElementById('stTotal').textContent = n;
   if (!n) return;
-  var mx = allSismos.reduce(function(a,b){ return b.mag>a.mag?b:a; });
+  var mx = list.reduce(function(a,b){ return b.mag>a.mag?b:a; });
   document.getElementById('stMax').textContent    = mx.mag.toFixed(1);
   document.getElementById('stMaxLoc').textContent = mx.loc.split(',')[0] || '—';
-  var last = allSismos[0];
+  var last = list[0];
   document.getElementById('stLast').textContent  = last.mag.toFixed(1);
   document.getElementById('stLastT').textContent = last.time + ' · ' + last.date.slice(0,5);
-  var avg = allSismos.reduce(function(s,x){ return s+x.depth; },0) / n;
+  var avg = list.reduce(function(s,x){ return s+x.depth; },0) / n;
   document.getElementById('stDepth').textContent = avg.toFixed(1) + ' km';
 }
 
 function updateTitle() {
   var labels = { hoy:'Sismos de hoy', '7d':'Últimos 7 días', '30d':'Últimos 30 días', custom:'Rango personalizado' };
   var base = labels[dateFilter] || '7 días';
-  document.getElementById('listTitle').textContent = base + ' (' + allSismos.length + ')';
+  document.getElementById('listTitle').textContent = base + ' (' + filtered().length + ')';
   var r = dateRange();
   document.getElementById('stPeriod').textContent = r.start + ' — ' + r.end;
   // Subtítulo del logo
@@ -903,12 +1331,54 @@ function updateTitle() {
 }
 
 // ── Lista ──────────────────────────────────────────────────────────────────
+// Calcula los límites de timestamp para el filtro de fecha activo
+function tsRange() {
+  var now = new Date();
+  // Venezuela = UTC-4: inicio del "hoy" local son las 04:00 UTC
+  var veNow   = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+  var veY = veNow.getUTCFullYear(), veM = veNow.getUTCMonth(), veD = veNow.getUTCDate();
+
+  var tsStart, tsEnd;
+
+  if (dateFilter === 'hoy') {
+    // 00:00 VE = 04:00 UTC   /   23:59:59 VE = 03:59:59 UTC del día siguiente
+    tsStart = Date.UTC(veY, veM, veD, 4, 0, 0);
+    tsEnd   = Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999);
+
+  } else if (dateFilter === '7d') {
+    // Últimos 7 días completos en hora VE
+    var d7 = new Date(Date.UTC(veY, veM, veD - 6, 4, 0, 0)); // inicio 7 días atrás a las 00:00 VE
+    tsStart = d7.getTime();
+    tsEnd   = Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999);
+
+  } else if (dateFilter === '30d') {
+    var d30 = new Date(Date.UTC(veY, veM, veD - 29, 4, 0, 0));
+    tsStart = d30.getTime();
+    tsEnd   = Date.UTC(veY, veM, veD + 1, 3, 59, 59, 999);
+
+  } else if (dateFilter === 'custom') {
+    tsStart = customFrom ? new Date(customFrom).setHours(0,0,0,0)   : 0;
+    tsEnd   = customTo   ? new Date(customTo).setHours(23,59,59,999) : Date.now() + 86400000;
+
+  } else {
+    // 'todo' — sin restricción de fechas
+    tsStart = 0;
+    tsEnd   = Infinity;
+  }
+  return { tsStart: tsStart, tsEnd: tsEnd };
+}
+
 function filtered() {
+  var range = tsRange();
   return allSismos.filter(function(s) {
-    if (magFilter === 'micro' && s.mag >= 2)  return false;
-    if (magFilter === 'minor' && (s.mag<2||s.mag>=3)) return false;
-    if (magFilter === 'light' && (s.mag<3||s.mag>=4)) return false;
-    if (magFilter === 'mod'   && s.mag < 4)   return false;
+    // Filtro magnitud
+    if (magFilter === 'micro' && s.mag >= 2)             return false;
+    if (magFilter === 'minor' && (s.mag<2||s.mag>=3))   return false;
+    if (magFilter === 'light' && (s.mag<3||s.mag>=4))   return false;
+    if (magFilter === 'mod'   && s.mag < 4)              return false;
+    // Filtro fecha por timestamp real
+    if (s.ts && s.ts < range.tsStart) return false;
+    if (s.ts && s.ts > range.tsEnd)   return false;
     return true;
   });
 }
@@ -953,8 +1423,17 @@ function setDate(f, btn) {
   document.getElementById('dateChips').querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
   btn.classList.add('active');
   var di = document.getElementById('dateInputs');
-  if (f === 'custom') { di.classList.add('show'); }
-  else { di.classList.remove('show'); customFrom=null; customTo=null; savePrefs(); refreshData(); }
+  if (f === 'custom') {
+    di.classList.add('show');
+  } else {
+    di.classList.remove('show');
+    customFrom = null; customTo = null;
+    savePrefs();
+    // Respuesta inmediata: re-filtra los datos ya cargados sin esperar la red.
+    // Después lanza recarga en segundo plano para cubrir períodos sin historial.
+    updateStats(); updateTitle(); renderList();
+    requestRefresh();
+  }
 }
 
 function applyCustom() {
@@ -1150,19 +1629,11 @@ function applyPrefsToUI() {
 var _origRefresh = refreshData;
 refreshData = async function() {
   document.getElementById('fabRefresh').classList.add('spinning');
-  await _origRefresh();
-  document.getElementById('fabRefresh').classList.remove('spinning');
-};
-
-// ── updateTitle: update logo subtitle ──────────────────────────────────────
-var _origTitle = updateTitle;
-updateTitle = function() {
-  _origTitle();
-  var srcs = [];
-  if (srcUSGS) srcs.push('USGS');
-  if (srcFUNVISIS) srcs.push('FUNVISIS');
-  var el = document.getElementById('logoSub');
-  if (el) el.textContent = srcs.join(' · ') || '—';
+  try {
+    await _origRefresh();
+  } finally {
+    document.getElementById('fabRefresh').classList.remove('spinning');
+  }
 };
 
 // ── Panel de actualizaciones toggle ────────────────────────────────────────
@@ -1175,7 +1646,7 @@ function toggleUpdatePanel() {
 //  PWA VERSIONING SYSTEM (mismo patrón que GestioMada / Divisas BCV)
 // ══════════════════════════════════════════════════════════════════
 (function(){
-  const APP_VERSION = 'v1_0';
+  const APP_VERSION = 'v1_3';
   const btnCheck  = document.getElementById('btn_pwa_check_updates');
   const btnApply  = document.getElementById('btn_pwa_apply_update');
   const statusEl  = document.getElementById('pwa_update_status');
@@ -1315,6 +1786,507 @@ function toggleUpdatePanel() {
     }
   });
 })();
+
+
+// ════════════════════════════════════════════════════════
+//  NUEVAS FUNCIONES — Mejoras v1_1
+// ════════════════════════════════════════════════════════
+
+// ── Variables ────────────────────────────────────────────
+var userLat = null, userLon = null;
+var sortMode = 'time';
+var mapMode  = 'markers';
+var heatLayer = null;
+var userMarker = null;
+var notifEnabled = false;
+var lastKnownIds = new Set();
+var sortModes  = ['time','mag','depth','dist'];
+var sortLabels = { time:'Reciente', mag:'Mayor mag.', depth:'Prof.', dist:'Distancia' };
+
+// ── Fallas sísmicas ──────────────────────────────────────
+var FALLAS = [
+  { name:'Falla de Boconó',     lat:8.6,  lon:-70.7, radius:150 },
+  { name:'Falla San Sebastián', lat:10.4, lon:-66.8, radius:120 },
+  { name:'Falla de El Pilar',   lat:10.5, lon:-63.5, radius:130 },
+  { name:'Falla de Oca-Ancón',  lat:11.5, lon:-72.5, radius:100 },
+];
+
+// ── Distancia ────────────────────────────────────────────
+function haversine(lat1, lon1, lat2, lon2) {
+  var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function fmtDist(km){ return km<1?'<1 km':Math.round(km)+' km'; }
+
+// ── Geolocalización ──────────────────────────────────────
+function requestGeo(cb) {
+  if (!navigator.geolocation) { if(cb) cb(false); return; }
+  navigator.geolocation.getCurrentPosition(
+    function(p){ userLat=p.coords.latitude; userLon=p.coords.longitude; if(cb) cb(true); },
+    function(){  if(cb) cb(false); },
+    { timeout:8000 }
+  );
+}
+
+function centerMapOnUser() {
+  requestGeo(function(ok) {
+    if (!ok) { showToast('No se pudo obtener tu ubicación'); return; }
+    var tabs = document.querySelectorAll('.tab');
+    switchTab('mapa', tabs[1]);
+    setTimeout(function() {
+      if (!map) return;
+      map.setView([userLat,userLon],9,{animate:true});
+      if (userMarker) map.removeLayer(userMarker);
+      userMarker = L.circleMarker([userLat,userLon],{radius:9,fillColor:'#4f46e5',color:'#fff',weight:2.5,fillOpacity:1}).addTo(map).bindPopup('Tu ubicación').openPopup();
+      renderList();
+    }, 350);
+  });
+}
+
+// ── Tiempo transcurrido ──────────────────────────────────
+function timeAgo(ts) {
+  var d=Math.floor((Date.now()-ts)/1000);
+  if(d<60) return 'hace '+d+'s';
+  if(d<3600) return 'hace '+Math.floor(d/60)+'min';
+  if(d<86400) return 'hace '+Math.floor(d/3600)+'h';
+  return 'hace '+Math.floor(d/86400)+'d';
+}
+
+// ── Widget último sismo ──────────────────────────────────
+function updateLastWidget() {
+  if (!allSismos.length) return;
+  var s=allSismos[0], w=document.getElementById('lastQuakeWidget');
+  w.style.display='flex';
+  document.getElementById('lqLoc').textContent = s.loc;
+  document.getElementById('lqSub').textContent = 'Mag '+s.mag.toFixed(1)+' · Prof. '+s.depth.toFixed(1)+' km';
+  document.getElementById('lqAgo').textContent = timeAgo(s.ts);
+}
+setInterval(function(){ if(allSismos.length) updateLastWidget(); }, 60000);
+
+// ── Alerta sismo reciente ────────────────────────────────
+function checkRecentAlert() {
+  var now=Date.now();
+  var recent=allSismos.filter(function(s){ return s.mag>=3.0&&(now-s.ts)<30*60*1000; });
+  var el=document.getElementById('recentAlert');
+  if (!recent.length) { el.classList.remove('show'); return; }
+  var s=recent[0];
+  document.getElementById('raBadge').className='ra-badge '+mClass(s.mag);
+  document.getElementById('raMag').textContent  = s.mag.toFixed(1);
+  document.getElementById('raLbl').textContent  = mLabel(s.mag);
+  document.getElementById('raTitle').textContent = '¡Sismo en los últimos 30 min!';
+  document.getElementById('raSub').textContent   = s.loc+' · '+timeAgo(s.ts);
+  el.classList.add('show');
+  el.onclick = function(){ openDetail(allSismos.indexOf(s)); };
+}
+
+// ── Notificaciones ───────────────────────────────────────
+function updateNotifBtn() {
+  var btn=document.getElementById('notifBtn'), text=document.getElementById('notifBtnText');
+  if (!btn) return;
+  if (!('Notification' in window)) { btn.style.display='none'; return; }
+  notifEnabled = Notification.permission==='granted' && localStorage.getItem('sismos_notif')==='1';
+  btn.className='notif-btn '+(notifEnabled?'on':'off');
+  text.textContent = notifEnabled?'Alertas activadas ✓':'Activar alertas';
+}
+
+async function toggleNotifications() {
+  if (!('Notification' in window)) { showToast('Tu navegador no soporta notificaciones'); return; }
+  if (notifEnabled) { localStorage.setItem('sismos_notif','0'); notifEnabled=false; updateNotifBtn(); return; }
+  var perm=await Notification.requestPermission();
+  if (perm==='granted') {
+    localStorage.setItem('sismos_notif','1'); notifEnabled=true; updateNotifBtn();
+    new Notification('Sismos Venezuela',{body:'Recibirás alertas para sismos ≥4.0 Mw',icon:'./icon-192.png'});
+  } else { showToast('Permiso de notificación denegado'); }
+}
+
+function sendNotifIfNeeded() {
+  if (!notifEnabled||Notification.permission!=='granted') return;
+  var now=Date.now();
+  allSismos.filter(function(s){ return s.mag>=4.0&&(now-s.ts)<10*60*1000; }).forEach(function(s) {
+    var id=s.lat.toFixed(2)+s.lon.toFixed(2)+s.time;
+    if (lastKnownIds.has(id)) return;
+    lastKnownIds.add(id);
+    try { new Notification('⚠️ Sismo M'+s.mag.toFixed(1)+' Venezuela',{body:s.loc+' · Prof. '+s.depth.toFixed(1)+' km',icon:'./icon-192.png',tag:id}); } catch(e){}
+  });
+}
+
+// ── Ordenamiento ─────────────────────────────────────────
+function cycleSort() {
+  var idx=sortModes.indexOf(sortMode);
+  var next=sortModes[(idx+1)%sortModes.length];
+  if (next==='dist' && userLat===null) {
+    requestGeo(function(ok){ if(ok){sortMode='dist';document.getElementById('sortLabel').textContent=sortLabels['dist'];savePrefs();renderList();}else{showToast('Activa tu ubicación para ordenar por distancia');} });
+    return;
+  }
+  sortMode=next;
+  document.getElementById('sortLabel').textContent=sortLabels[sortMode];
+  savePrefs(); renderList();
+}
+
+// ── Búsqueda ─────────────────────────────────────────────
+function getSearchQuery() {
+  var el=document.getElementById('searchInput');
+  return el?el.value.trim().toLowerCase():'';
+}
+
+// ── Export CSV ───────────────────────────────────────────
+function exportCSV() {
+  var list=filtered();
+  if (!list.length) { showToast('No hay sismos para exportar'); return; }
+  var csv=['Fecha,Hora,Magnitud,Ubicación,Profundidad(km),Latitud,Longitud,Fuente']
+    .concat(list.map(function(s){
+      return [s.date,s.time,s.mag.toFixed(1),'"'+s.loc.replace(/"/g,'""')+'"',s.depth.toFixed(1),s.lat.toFixed(4),s.lon.toFixed(4),s.src].join(',');
+    })).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='sismos-venezuela.csv'; a.click();
+  showToast('CSV descargado ('+list.length+' sismos)');
+}
+
+// ── Compartir ────────────────────────────────────────────
+function shareWhatsApp() {
+  if (selectedIdx===null) return;
+  var s=allSismos[selectedIdx];
+  var txt='🌍 *Sismo en Venezuela*\n📍 '+s.loc+'\n📊 Magnitud: *'+s.mag.toFixed(1)+' Mw* ('+mLabel(s.mag)+')\n⬇️ Profundidad: '+s.depth.toFixed(1)+' km\n🕐 '+s.date+' '+s.time+'\n🗺️ https://www.google.com/maps?q='+s.lat+','+s.lon+'\n_Fuente: '+s.src+' · Sismos Venezuela_';
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+function copyDetail() {
+  if (selectedIdx===null) return;
+  var s=allSismos[selectedIdx];
+  var txt='Sismo en Venezuela\nUbicación: '+s.loc+'\nMagnitud: '+s.mag.toFixed(1)+' Mw\nProfundidad: '+s.depth.toFixed(1)+' km\nFecha/Hora: '+s.date+' '+s.time+'\nFuente: '+s.src;
+  navigator.clipboard.writeText(txt).then(function(){showToast('Copiado al portapapeles');}).catch(function(){showToast('No se pudo copiar');});
+}
+
+// ── Mapa de calor ────────────────────────────────────────
+function setMapMode(mode) {
+  mapMode=mode;
+  document.getElementById('mapModeMarkers').classList.toggle('active',mode==='markers');
+  document.getElementById('mapModeHeat').classList.toggle('active',mode==='heat');
+  if (mode==='heat') { loadHeat(function(){ if(map){renderHeatLayer();hideMapMarkers();} }); }
+  else { removeHeatLayer(); showMapMarkers(); }
+}
+
+function loadHeat(cb) {
+  if (window.L&&window.L.heatLayer) { cb(); return; }
+  var js=document.createElement('script');
+  js.src='https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
+  js.onload=function(){cb();}; document.head.appendChild(js);
+}
+
+function renderHeatLayer() {
+  removeHeatLayer();
+  var pts=allSismos.map(function(s){return[s.lat,s.lon,s.mag/8];});
+  heatLayer=L.heatLayer(pts,{radius:25,blur:18,maxZoom:10,gradient:{0.2:'#4f46e5',0.5:'#f59e0b',0.8:'#ef4444'}}).addTo(map);
+}
+
+function removeHeatLayer() { if(heatLayer&&map){map.removeLayer(heatLayer);heatLayer=null;} }
+function hideMapMarkers() { mapMarkers.forEach(function(m){m.setStyle({opacity:0,fillOpacity:0});}); }
+function showMapMarkers() { mapMarkers.forEach(function(m){m.setStyle({opacity:.9,fillOpacity:.85});}); }
+
+// ── Gráfico actividad diaria ─────────────────────────────
+function renderActivityChart() {
+  var el = document.getElementById('chartBars'); if (!el) return;
+  // Usar filtered() para que el gráfico refleje el período y magnitud seleccionados
+  var source = filtered();
+  if (!source.length) { el.innerHTML = ''; return; }
+  var counts = {};
+  source.forEach(function(s){ var k = s.date.slice(0,5); counts[k] = (counts[k]||0) + 1; });
+  var keys = Object.keys(counts).sort(function(a,b){
+    var pa = a.split('/'), pb = b.split('/');
+    return new Date(2026, parseInt(pa[1])-1, parseInt(pa[0])) - new Date(2026, parseInt(pb[1])-1, parseInt(pb[0]));
+  });
+  var max = Math.max.apply(null, keys.map(function(k){ return counts[k]; }));
+  el.innerHTML = keys.map(function(k){
+    var pct = max > 0 ? (counts[k] / max * 100) : 0;
+    var color = counts[k] > 10 ? 'var(--red)' : counts[k] > 5 ? 'var(--orange)' : 'var(--accent)';
+    return '<div class="chart-bar-col" title="'+k+': '+counts[k]+' sismos" onclick="filterChartDate(\''+k+'\')"><div class="chart-bar" style="height:'+Math.max(4,pct*0.54)+'px;background:'+color+'"></div><span class="chart-bar-lbl">'+k.slice(0,5)+'</span></div>';
+  }).join('');
+}
+
+function filterChartDate(ddmm) {
+  var tabs=document.querySelectorAll('.tab');
+  switchTab('lista',tabs[0]);
+  var el=document.getElementById('searchInput');
+  if(el){el.value=ddmm.slice(0,2);renderList();}
+}
+
+// ── Actividad por fallas ─────────────────────────────────
+function renderFallas() {
+  var el=document.getElementById('fallasWrap'); if(!el) return;
+  var totals=FALLAS.map(function(f){ return allSismos.filter(function(s){return haversine(s.lat,s.lon,f.lat,f.lon)<=f.radius;}).length; });
+  var max=Math.max.apply(null,totals)||1;
+  el.innerHTML=FALLAS.map(function(f,i){
+    var pct=(totals[i]/max*100).toFixed(0);
+    var color=totals[i]===0?'var(--border-strong)':totals[i]<max*0.33?'var(--yellow)':totals[i]<max*0.66?'var(--orange)':'var(--red)';
+    return '<div class="falla-row"><span class="falla-name">'+f.name+'</span><div class="falla-bar-wrap"><div class="falla-bar" style="width:'+pct+'%;background:'+color+'"></div></div><span class="falla-count">'+totals[i]+'</span></div>';
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  filtered() FINAL — búsqueda + ordenamiento + caché
+//  Envuelve la función base (que filtra por magnitud/fecha)
+//  añadiendo búsqueda de texto, ordenamiento y una caché
+//  por ciclo para no recalcular en updateStats+updateTitle+
+//  renderList dentro del mismo refresh.
+// ════════════════════════════════════════════════════════
+var _baseFiltered = filtered;   // guarda la función base antes de sobreescribir
+
+var _fcCache = null;  // resultado cacheado
+var _fcKey   = '';    // clave del ciclo que lo generó
+
+function _filteredFull() {
+  // Clave que cambia cuando cambia cualquier variable relevante
+  var key = allSismos.length + '|' + dateFilter + '|' + magFilter + '|' + sortMode + '|' +
+    (customFrom ? customFrom.getTime() : '') + '|' + (customTo ? customTo.getTime() : '') + '|' +
+    (userLat !== null ? userLat.toFixed(3) : '') + '|' + getSearchQuery();
+  if (_fcCache !== null && _fcKey === key) return _fcCache;
+
+  var list = _baseFiltered();   // filtra por magnitud y fecha
+
+  // Búsqueda de texto
+  var q = getSearchQuery();
+  if (q) list = list.filter(function(s){ return s.loc.toLowerCase().includes(q); });
+
+  // Ordenamiento
+  if (sortMode === 'mag')   list = list.slice().sort(function(a,b){ return b.mag - a.mag; });
+  if (sortMode === 'depth') list = list.slice().sort(function(a,b){ return a.depth - b.depth; });
+  if (sortMode === 'dist' && userLat !== null) {
+    list = list.slice().sort(function(a,b){
+      return haversine(userLat,userLon,a.lat,a.lon) - haversine(userLat,userLon,b.lat,b.lon);
+    });
+  }
+
+  _fcCache = list;
+  _fcKey   = key;
+  return list;
+}
+
+filtered = _filteredFull;
+
+// ── renderList con distancia y badge de fuente ───────────
+renderList = function() {
+  var el = document.getElementById('sismoList');
+  var list = filtered();
+  if (!list.length) {
+    el.innerHTML = '<div class="loading"><span>Sin sismos en este rango</span></div>';
+    return;
+  }
+  // Mapa de referencia O(1) para obtener el índice en allSismos sin indexOf O(n)
+  var idxMap = new Map();
+  allSismos.forEach(function(s, i){ idxMap.set(s, i); });
+
+  el.innerHTML = list.map(function(s) {
+    var i = idxMap.has(s) ? idxMap.get(s) : allSismos.indexOf(s);
+    var srcClr = s.src === 'FUNVISIS'
+      ? 'color:var(--green);background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.2)'
+      : 'color:var(--accent);background:rgba(79,70,229,.08);border-color:rgba(79,70,229,.2)';
+    var distBadge = '';
+    if (userLat !== null) {
+      var km = haversine(userLat, userLon, s.lat, s.lon);
+      distBadge = '<span class="dist-badge">' + fmtDist(km) + '</span>';
+    }
+    return '<div class="sc-item" onclick="openDetail(' + i + ')">'
+      + '<div class="mbadge ' + mClass(s.mag) + '"><span class="mn">' + s.mag.toFixed(1) + '</span><span class="ml">' + mLabel(s.mag) + '</span></div>'
+      + '<div class="iinfo"><div class="iloc">' + s.loc + '</div>'
+      + '<div class="imeta"><span>' + s.time + ' · ' + s.date.slice(0,5) + '</span>'
+      + '<span>↑ ' + s.depth.toFixed(1) + ' km</span>' + distBadge
+      + '<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;border:1px solid;' + srcClr + '">' + s.src + '</span>'
+      + '</div></div>'
+      + '<div class="iarr"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>'
+      + '</div>';
+  }).join('');
+};
+
+// ── HOOK refreshData — ejecutar extras tras cada carga ───
+var _baseRefresh = refreshData;
+refreshData = async function() {
+  _fcCache = null; // invalidar caché antes de la nueva carga
+  await _baseRefresh();
+  _fcCache = null; // invalidar de nuevo con los datos frescos
+  checkRecentAlert();
+  sendNotifIfNeeded();
+  updateLastWidget();
+  renderActivityChart();
+  renderFallas();
+  updateFunvisisCacheStatus();
+};
+
+// ── Indicador del cache FUNVISIS en la status bar ────────
+function updateFunvisisCacheStatus() {
+  var cached = funvisisCacheLoad();
+  var el = document.getElementById('stxt');
+  if (!el) return;
+  var base = 'Datos actualizados';
+  if (cached.length > 0) {
+    // Contar cuantos sismos FUNVISIS del dia estan en cache vs los que devolvio la API ahora
+    var funvisisEnPantalla = allSismos.filter(function(s){ return s.src === 'FUNVISIS'; }).length;
+    if (cached.length > 20) {
+      el.textContent = base + ' \u00b7 FUNVISIS: ' + funvisisEnPantalla + ' (\u2191' + cached.length + ' acum.)';
+    }
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  updateNotifBtn();
+  requestGeo(function(ok){ if(ok) renderList(); });
+
+  // Inicializar fechas del picker de histórico FUNVISIS con el período activo
+  (function() {
+    var now  = new Date();
+    var from = new Date(); from.setDate(from.getDate() - 6);
+    function fvISO(d){ return d.toISOString().split('T')[0]; }
+    var elFrom = document.getElementById('fvFromDate');
+    var elTo   = document.getElementById('fvToDate');
+    if (elFrom) elFrom.value = fvISO(from);
+    if (elTo)   elTo.value   = fvISO(now);
+  })();
+});
+
+// ══════════════════════════════════════════════════════
+//  CARGA HISTÓRICA FUNVISIS desde Power BI público
+//  Usa la misma API que el monitor oficial de FUNVISIS.
+//  Los datos se guardan en el cache acumulador local
+//  y se muestran automáticamente junto a los de USGS.
+// ══════════════════════════════════════════════════════
+var FV_PBI_URL      = 'https://wabi-paas-1-scus-api.analysis.windows.net/public/reports/querydata?synchronous=true';
+var FV_DATASET_ID   = '0a81c79b-36af-45f7-bf9d-dae690a104dc';
+var FV_REPORT_ID    = '9da15155-c835-49fb-b56c-c6c1da538867';
+var FV_MODEL_ID     = 1295916;
+var FV_VISUAL_ID    = '8d41565db2057fedc97b';
+var FV_RESOURCE_KEY = 'ea71094e-7400-405f-9101-2cc3e5c545e2';
+
+function fvSetStatus(msg, cls) {
+  var el = document.getElementById('fvStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'funvisis-status' + (cls ? ' ' + cls : '');
+}
+
+function fvBuildQuery(from, to) {
+  var whereClause = [];
+  if (from) {
+    whereClause.push({"Condition":{"Comparison":{
+      "ComparisonKind": 2,
+      "Left":  {"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Fecha"}},
+      "Right": {"Literal":{"Value":"datetime'" + from + "T00:00:00'"}}
+    }}});
+  }
+  if (to) {
+    whereClause.push({"Condition":{"Comparison":{
+      "ComparisonKind": 3,
+      "Left":  {"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Fecha"}},
+      "Right": {"Literal":{"Value":"datetime'" + to + "T23:59:59'"}}
+    }}});
+  }
+  var query = {
+    "Version":2, "From":[{"Name":"s","Entity":"sismos","Type":0}],
+    "Select":[
+      {"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Longitud"},"Name":"sismos.Longitud"},
+      {"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Latitud"},"Name":"sismos.Latitud"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Profundidad"}},"Function":0},"Name":"Sum(sismos.Profundidad)"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Fecha"}},"Function":3},"Name":"Min(sismos.Fecha)"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Hora"}},"Function":3},"Name":"Min(sismos.Hora)"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Epicentro"}},"Function":3},"Name":"Min(sismos.Ubicacion)"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Id"}},"Function":5},"Name":"CountNonNull(sismos.Id)"},
+      {"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Magnitud"}},"Function":3},"Name":"Min(sismos.Magnitud)"}
+    ],
+    "OrderBy":[{"Direction":2,"Expression":{"Aggregation":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"s"}},"Property":"Id"}},"Function":5}}}]
+  };
+  if (whereClause.length) query["Where"] = whereClause;
+  return {
+    "version":"1.0.0",
+    "queries":[{
+      "Query":{"Commands":[{"SemanticQueryDataShapeCommand":{
+        "Query": query,
+        "Binding":{
+          "Primary":{"Groupings":[{"Projections":[0,1,2,3,4,5,6,7]}]},
+          "DataReduction":{"DataVolume":4,"Primary":{"Top":{}}},
+          "SuppressedJoinPredicates":[2,3,4,5,6,7],"Version":1
+        },
+        "ExecutionMetricsKind":1
+      }}]},
+      "QueryId":"",
+      "ApplicationContext":{"DatasetId":FV_DATASET_ID,"Sources":[{"ReportId":FV_REPORT_ID,"VisualId":FV_VISUAL_ID}]}
+    }],
+    "cancelQueries":[], "modelId":FV_MODEL_ID
+  };
+}
+
+// Parsea DSR comprimido de PBI → formato interno de la PWA
+function fvParseDSR(json) {
+  var ds0     = json.results[0].result.data.dsr.DS[0];
+  var dm0     = ds0.PH[0].DM0;
+  var locDict = (ds0.ValueDicts || {})['D0'] || [];
+  var NUM = 8, sismos = [], prev = new Array(NUM).fill(null);
+  dm0.forEach(function(rec) {
+    var vals = rec.C || [], rmask = rec.R || 0, cur = new Array(NUM), vi = 0;
+    for (var col = 0; col < NUM; col++) {
+      cur[col] = (rmask & (1 << col)) ? prev[col] : vals[vi++];
+    }
+    prev = cur;
+    var ts = cur[3];
+    var dateStr = '', timeStr = '';
+    if (typeof ts === 'number' && ts > 0) {
+      var d = new Date(ts);
+      dateStr = d.toLocaleDateString('es-VE', {day:'2-digit',month:'2-digit',year:'numeric'});
+    }
+    if (typeof cur[4] === 'string' && cur[4].indexOf('T') !== -1) {
+      timeStr = cur[4].split('T')[1].slice(0,5);
+    }
+    var loc = 'Venezuela';
+    if (typeof cur[5] === 'number' && locDict[cur[5]] != null) loc = locDict[cur[5]];
+    else if (typeof cur[5] === 'string' && cur[5]) loc = cur[5];
+    var lat = cur[1], lon = cur[0];
+    var depth = typeof cur[2]==='number' ? cur[2] : parseFloat(cur[2])||0;
+    var mag   = typeof cur[7]==='number' ? cur[7] : parseFloat(cur[7])||0;
+    if (lat != null && lon != null) {
+      sismos.push({ lat:lat, lon:lon, depth:depth, date:dateStr, time:timeStr, loc:loc, mag:mag, ts:ts||0, src:'FUNVISIS' });
+    }
+  });
+  return sismos;
+}
+
+async function cargarHistoricoFunvisis() {
+  var btn  = document.getElementById('fvBtn');
+  var from = document.getElementById('fvFromDate').value;
+  var to   = document.getElementById('fvToDate').value;
+  if (!from && !to) { fvSetStatus('Selecciona al menos una fecha.', 'err'); return; }
+  btn.disabled = true;
+  fvSetStatus('Conectando con FUNVISIS...');
+  try {
+    var resp = await fetch(FV_PBI_URL, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json;charset=UTF-8',
+        'Accept':'application/json, text/plain, */*',
+        'X-PowerBI-ResourceKey': FV_RESOURCE_KEY,
+        'Origin':'https://app.powerbi.com',
+        'Referer':'https://app.powerbi.com/'
+      },
+      body: JSON.stringify(fvBuildQuery(from, to))
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status + (resp.status===403 ? ' — Token expirado' : ''));
+    var json = await resp.json();
+    // Detectar error del servidor PBI
+    var dsr = json.results && json.results[0] && json.results[0].result && json.results[0].result.data && json.results[0].result.data.dsr;
+    if (!dsr || dsr.DataShapes) throw new Error('Respuesta inválida del servidor de FUNVISIS');
+    var nuevos = fvParseDSR(json);
+    if (!nuevos.length) throw new Error('No se encontraron sismos en ese rango de fechas');
+    // Guardar en cache acumulador y refrescar
+    funvisisCacheSave(nuevos);
+    var total = funvisisCacheLoad().length;
+    fvSetStatus('✓ ' + nuevos.length + ' sismos cargados (' + total + ' en cache). Actualizando lista...', 'ok');
+    setTimeout(function() { requestRefresh(); }, 400);
+  } catch(e) {
+    fvSetStatus('Error: ' + e.message, 'err');
+    console.error('[FUNVISIS histórico]', e);
+  }
+  btn.disabled = false;
+}
+
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* Sismos Venezuela — Service Worker */
-const VERSION    = 'v1_3';
+const VERSION    = 'v1_4';
 const CACHE_NAME = 'sismos-ve-' + VERSION;
 
 const URLS_TO_CACHE = ['./', './index.html'];
@@ -44,7 +44,8 @@ self.addEventListener('fetch', event => {
     'earthquake.usgs.gov', 'sismosve.rafnixg.dev',
     'allorigins.win', 'corsproxy.io',
     'tile.openstreetmap.org', 'unpkg.com',
-    'fonts.googleapis.com', 'fonts.gstatic.com'
+    'fonts.googleapis.com', 'fonts.gstatic.com',
+    'analysis.windows.net'  // Power BI FUNVISIS
   ];
   if (bypass.some(h => url.hostname.includes(h))) {
     event.respondWith(fetch(req).catch(() => new Response('', { status: 503 })));

@@ -878,14 +878,11 @@ var REFRESH_MS = 5 * 60 * 1000;
 
 // ════════════════════════════════════════════════════════
 //  ACUMULADOR FUNVISIS EN localStorage
-//  Cada vez que se reciben datos de FUNVISIS (SismosVE o
-//  API propia), se SUMAN al cache del dia actual sin borrar
-//  los sismos anteriores. Asi aunque FUNVISIS solo sirva
-//  los ultimos 20 en cada llamada, la app construye el
-//  historial completo del dia en el dispositivo.
-//  El cache se limpia automaticamente al pasar de dia.
+//  Cache del DÍA actual (se limpia al cambiar de día).
+//  Cache HISTÓRICO del extractor (persiste entre días).
 // ════════════════════════════════════════════════════════
-var FUNVISIS_CACHE_KEY = 'sismos_funvisis_cache';
+var FUNVISIS_CACHE_KEY  = 'sismos_funvisis_cache';
+var FUNVISIS_HIST_KEY   = 'sismos_funvisis_hist';  // extractor histórico
 
 function _veToday() {
   // Fecha de hoy en Venezuela (UTC-4) como string YYYY-MM-DD
@@ -909,11 +906,10 @@ function funvisisCacheLoad() {
 }
 
 function funvisisCacheSave(newSismos) {
-  // Combina los sismos nuevos con los ya acumulados, deduplica y guarda
+  // Combina los sismos nuevos con los ya acumulados del día, deduplica y guarda
   if (!newSismos || !newSismos.length) return;
   try {
     var existing = funvisisCacheLoad();
-    // Combinar y deduplicar usando la misma logica que dedupe()
     var combined = existing.concat(newSismos);
     var seen = new Set();
     var deduped = combined.filter(function(s) {
@@ -922,13 +918,41 @@ function funvisisCacheSave(newSismos) {
       if (seen.has(key)) return false;
       seen.add(key); return true;
     });
-    // Limitar a 300 sismos para no saturar localStorage (cada sismo ~200 bytes → 60KB max)
     if (deduped.length > 300) deduped = deduped.slice(0, 300);
     localStorage.setItem(FUNVISIS_CACHE_KEY, JSON.stringify({
       date: _veToday(),
       sismos: deduped
     }));
-  } catch(e) { /* localStorage lleno o bloqueado — continuar sin cache */ }
+  } catch(e) {}
+}
+
+// ── Cache histórico del extractor (persiste entre días, ordenado por ts) ──
+function funvisisHistLoad() {
+  try {
+    var raw = localStorage.getItem(FUNVISIS_HIST_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) || [];
+  } catch(e) { return []; }
+}
+
+function funvisisHistSave(newSismos) {
+  // Agrega sismos históricos (del extractor) al cache persistente.
+  // No tiene límite de día — persiste hasta que el usuario lo borre.
+  if (!newSismos || !newSismos.length) return;
+  try {
+    var existing = funvisisHistLoad();
+    var combined = existing.concat(newSismos);
+    var seen = new Set();
+    var deduped = combined.filter(function(s) {
+      var keyTs = s.ts ? Math.round(s.ts / 60000) : s.time;
+      var key = (s.lat||0).toFixed(2)+'|'+(s.lon||0).toFixed(2)+'|'+(s.mag||0).toFixed(1)+'|'+keyTs;
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    // Límite: 5000 sismos (~1MB max)
+    if (deduped.length > 5000) deduped = deduped.slice(deduped.length - 5000);
+    localStorage.setItem(FUNVISIS_HIST_KEY, JSON.stringify(deduped));
+  } catch(e) {}
 }
 
 // Polyfill Promise.any para navegadores sin soporte (Android < 89, Safari < 14)
@@ -1252,11 +1276,25 @@ async function fetchSismos() {
   // Guardar sismos FUNVISIS frescos en el cache acumulador del dia
   if (funvisisFresh.length) funvisisCacheSave(funvisisFresh);
 
-  // Combinar con el cache acumulado del dia (sismos anteriores que ya no devuelve la API)
-  // Solo para filtros que incluyen el dia actual (hoy o 7d/30d que lo cubren)
-  if (srcFUNVISIS && dateFilter !== 'custom') {
+  // 1. Cache del DÍA actual (sismos que rotaron fuera de los últimos 20 de SismosVE)
+  if (srcFUNVISIS) {
     var cached = funvisisCacheLoad();
     if (cached.length) results = results.concat(cached);
+  }
+
+  // 2. Cache HISTÓRICO del extractor — filtrar por el rango de tiempo activo
+  if (srcFUNVISIS) {
+    var hist = funvisisHistLoad();
+    if (hist.length) {
+      var tsr = tsRange();
+      var histFiltrado = hist.filter(function(s) {
+        if (!s.ts) return false;
+        if (s.ts < tsr.tsStart) return false;
+        if (s.ts > tsr.tsEnd)   return false;
+        return true;
+      });
+      if (histFiltrado.length) results = results.concat(histFiltrado);
+    }
   }
 
   if (!results.length) throw new Error(errors.join(' / ') || 'Sin datos');
@@ -1482,12 +1520,16 @@ function initMap() {
 function renderMapMarkers() {
   mapMarkers.forEach(function(m){ map.removeLayer(m); });
   mapMarkers=[];
-  allSismos.forEach(function(s,i) {
-    var sz=Math.max(6,s.mag*4.5);
-    var m=L.circleMarker([s.lat,s.lon],{
-      radius:sz, fillColor:mColor(s.mag), color:'#fff', weight:1.5, fillOpacity:0.85
+  // Usar filtered() para que el mapa respete el filtro de fecha y magnitud activo
+  var list = filtered();
+  // Construir un mapa de idx para poder abrir el detalle correcto (openDetail usa allSismos[i])
+  list.forEach(function(s) {
+    var i = allSismos.indexOf(s);
+    var sz = Math.max(6, s.mag * 4.5);
+    var m = L.circleMarker([s.lat, s.lon], {
+      radius: sz, fillColor: mColor(s.mag), color: '#fff', weight: 1.5, fillOpacity: 0.85
     }).addTo(map);
-    m.on('click',function(){ selectMapSismo(i); });
+    m.on('click', (function(idx){ return function(){ selectMapSismo(idx); }; })(i));
     mapMarkers.push(m);
   });
 }
@@ -1646,7 +1688,7 @@ function toggleUpdatePanel() {
 //  PWA VERSIONING SYSTEM (mismo patrón que GestioMada / Divisas BCV)
 // ══════════════════════════════════════════════════════════════════
 (function(){
-  const APP_VERSION = 'v1_3';
+  const APP_VERSION = 'v1_4';
   const btnCheck  = document.getElementById('btn_pwa_check_updates');
   const btnApply  = document.getElementById('btn_pwa_apply_update');
   const statusEl  = document.getElementById('pwa_update_status');
@@ -1977,8 +2019,9 @@ function loadHeat(cb) {
 
 function renderHeatLayer() {
   removeHeatLayer();
-  var pts=allSismos.map(function(s){return[s.lat,s.lon,s.mag/8];});
-  heatLayer=L.heatLayer(pts,{radius:25,blur:18,maxZoom:10,gradient:{0.2:'#4f46e5',0.5:'#f59e0b',0.8:'#ef4444'}}).addTo(map);
+  // Usar filtered() para que el mapa de calor también respete el filtro activo
+  var pts = filtered().map(function(s){ return [s.lat, s.lon, s.mag / 8]; });
+  heatLayer = L.heatLayer(pts, {radius:25, blur:18, maxZoom:10, gradient:{0.2:'#4f46e5', 0.5:'#f59e0b', 0.8:'#ef4444'}}).addTo(map);
 }
 
 function removeHeatLayer() { if(heatLayer&&map){map.removeLayer(heatLayer);heatLayer=null;} }
@@ -2275,10 +2318,19 @@ async function cargarHistoricoFunvisis() {
     if (!dsr || dsr.DataShapes) throw new Error('Respuesta inválida del servidor de FUNVISIS');
     var nuevos = fvParseDSR(json);
     if (!nuevos.length) throw new Error('No se encontraron sismos en ese rango de fechas');
-    // Guardar en cache acumulador y refrescar
-    funvisisCacheSave(nuevos);
-    var total = funvisisCacheLoad().length;
-    fvSetStatus('✓ ' + nuevos.length + ' sismos cargados (' + total + ' en cache). Actualizando lista...', 'ok');
+    // Guardar en cache HISTÓRICO (persiste entre días) y también en el del día si aplica
+    funvisisHistSave(nuevos);
+    // Si algunos de los nuevos son de hoy, también al cache del día
+    var hoy = _veToday();
+    var deHoy = nuevos.filter(function(s){
+      if (!s.ts) return false;
+      var d = new Date(s.ts);
+      var veD = new Date(d.getTime() - 4*3600*1000);
+      return veD.toISOString().split('T')[0] === hoy;
+    });
+    if (deHoy.length) funvisisCacheSave(deHoy);
+    var total = funvisisHistLoad().length;
+    fvSetStatus('✓ ' + nuevos.length + ' sismos cargados (' + total + ' en histórico). Actualizando lista...', 'ok');
     setTimeout(function() { requestRefresh(); }, 400);
   } catch(e) {
     fvSetStatus('Error: ' + e.message, 'err');

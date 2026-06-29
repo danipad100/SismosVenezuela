@@ -1,5 +1,5 @@
 /* Sismos Venezuela — Service Worker */
-const VERSION    = 'v1_4';
+const VERSION    = 'v1_5';
 const CACHE_NAME = 'sismos-ve-' + VERSION;
 
 const URLS_TO_CACHE = ['./', './index.html'];

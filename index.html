@@ -394,34 +394,17 @@ body.dark header {
 @keyframes spn { to{transform:rotate(360deg)} }
 
 /* ── Panel actualizaciones ── */
-.update-panel {
-  position: fixed; bottom: calc(var(--sab) + 86px); left: 16px; right: 16px; z-index: 290;
-  background: var(--surface); border: 1px solid var(--border-strong);
-  border-radius: 16px; padding: 14px 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.12);
-  display: none; flex-direction: column; gap: 10px;
-  animation: sup .22s ease;
-}
-.update-panel.show { display: flex; }
-.update-panel-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.update-panel-title { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 7px; }
-.update-panel-title svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.update-status { font-size: 12px; color: var(--text-secondary); min-height: 16px; }
-.update-version { font-size: 11px; font-weight: 600; color: var(--text-tertiary); }
 .update-btn {
   font-family: inherit; font-size: 12px; font-weight: 600;
-  padding: 7px 13px; border-radius: 10px; border: none; cursor: pointer;
-  transition: all .15s;
+  padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer;
+  transition: all .15s; display: inline-flex; align-items: center; gap: 5px;
 }
+.update-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .update-btn.check { background: var(--accent-light); color: var(--accent); }
-.update-btn.apply { background: var(--accent); color: #fff; display: none; }
+.update-btn.check:hover { opacity: .85; }
+.update-btn.apply { background: var(--green); color: #fff; display: none; box-shadow: 0 2px 8px rgba(16,185,129,.3); }
+.update-btn.apply:hover { opacity: .88; }
 .update-btn:active { transform: scale(.96); }
-.update-close {
-  width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface-alt); cursor: pointer; color: var(--text-tertiary);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.update-close svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ── Toast ── */
 .toast {
@@ -573,9 +556,7 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
       </div>
     </div>
     <div class="header-right">
-      <button class="icon-top-btn" id="btn_pwa_toggle" title="Actualizaciones" onclick="toggleUpdatePanel()">
-        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
-      </button>
+
       <label class="dark-toggle-pill" title="Modo oscuro">
         <input id="dark_toggle" type="checkbox">
         <svg class="dt-ico dt-moon" viewBox="0 0 24 24"><path d="M21 14.3A8.7 8.7 0 0 1 9.7 3a7.7 7.7 0 1 0 11.3 11.3Z" fill="currentColor" stroke="none"/></svg>
@@ -799,6 +780,24 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
         <div class="funvisis-status" id="fvStatus"></div>
       </div>
     </div>
+
+    <!-- Actualizaciones -->
+    <div class="icard">
+      <h3><div class="card-icon purple"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></div>Versión y actualizaciones</h3>
+      <p style="margin-bottom:10px">Versión instalada: <strong>v<span id="version_label">—</span></strong></p>
+      <p id="pwa_update_status" style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;min-height:16px;line-height:1.5;">Toca "Buscar" para verificar si hay una versión nueva.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="update-btn check" id="btn_pwa_check_updates">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          Buscar actualización
+        </button>
+        <button class="update-btn apply" id="btn_pwa_apply_update">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Aplicar actualización
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -834,26 +833,7 @@ body.dark .fab-refresh { background: #818cf8; box-shadow: 0 4px 16px rgba(129,14
   </div>
 </div>
 
-<!-- ═══ PANEL ACTUALIZACIONES ═══ -->
-<div class="update-panel" id="updatePanel">
-  <div class="update-panel-row">
-    <span class="update-panel-title">
-      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
-      Actualizaciones
-    </span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="update-version">v<span id="version_label">—</span></span>
-      <button class="update-close" onclick="toggleUpdatePanel()">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <p class="update-status" id="pwa_update_status">Toca "Buscar" para verificar.</p>
-  <div style="display:flex;gap:8px">
-    <button class="update-btn check" id="btn_pwa_check_updates">Buscar actualización</button>
-    <button class="update-btn apply" id="btn_pwa_apply_update">Aplicar ahora</button>
-  </div>
-</div>
+
 
 <!-- ═══ TOAST ═══ -->
 <div class="toast" id="toast">
@@ -1678,17 +1658,11 @@ refreshData = async function() {
   }
 };
 
-// ── Panel de actualizaciones toggle ────────────────────────────────────────
-function toggleUpdatePanel() {
-  var p = document.getElementById('updatePanel');
-  p.classList.toggle('show');
-}
-
 // ══════════════════════════════════════════════════════════════════
 //  PWA VERSIONING SYSTEM (mismo patrón que GestioMada / Divisas BCV)
 // ══════════════════════════════════════════════════════════════════
 (function(){
-  const APP_VERSION = 'v1_4';
+  const APP_VERSION = 'v1_5';
   const btnCheck  = document.getElementById('btn_pwa_check_updates');
   const btnApply  = document.getElementById('btn_pwa_apply_update');
   const statusEl  = document.getElementById('pwa_update_status');
@@ -1818,13 +1792,12 @@ function toggleUpdatePanel() {
   btnCheck && btnCheck.addEventListener('click', checkUpdates);
   btnApply && btnApply.addEventListener('click', applyUpdate);
 
-  // Si hay SW esperando al cargar, avisar
+  // Si hay SW esperando al cargar, mostrar botón Aplicar directamente
   window.addEventListener('load', async function(){
     const reg = await getReg(); if(!reg) return;
     if(reg.waiting){
-      setStatus('Actualización disponible. Toca Aplicar.');
+      setStatus('✅ Actualización disponible — toca "Aplicar actualización".');
       showApply(true);
-      document.getElementById('updatePanel').classList.add('show');
     }
   });
 })();
